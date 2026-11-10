@@ -34581,9 +34581,9 @@ try { setTimeout(function(){ document.body.classList.remove('bf-booting'); }, 25
 /* ── keep the same view after a refresh (per browser tab) ── */
 var _bfSaved = null;
 var _bfSrc = 'none', _bfAddr = null;
-/* the address looks like #agent/a1/dashboard, #agency/ag2/reports or #bws/agencies, with an optional /household/tab on the end */
+/* the address looks like #agent/a1/dashboard, #agency/ag2/reports or #nhc/agencies, with an optional /household/tab on the end */
 function bfAddrParse(h) {
-  var p = String(h || '').replace(/^#\/?/, '').split('/'); if (!/^(agent|agency|bws)$/.test(p[0])) return null;
+  var p = String(h || '').replace(/^#\/?/, '').split('/'); if (p[0] === 'nhc') p[0] = 'bws'; if (!/^(agent|agency|bws)$/.test(p[0])) return null;
   for (var i = 0; i < p.length; i++) if (!/^[A-Za-z0-9]+$/.test(p[i])) return null;
   var t = p[0], o = { tier: t }, k = 1;
   if (t !== 'bws') { if (!p[1]) return null; if (t === 'agent') o.agent = p[1]; else o.agency = p[1]; k = 2; }
@@ -34592,7 +34592,7 @@ function bfAddrParse(h) {
 }
 function bfAddrBuild(st) {
   var who = st.tier === 'agent' ? st.agent : (st.tier === 'agency' ? st.agency : null);
-  return '#' + st.tier + (who ? '/' + who : '') + (st.page && st.page !== 'dashboard' || st.rec ? '/' + st.page : '') + (st.rec ? '/' + st.rec.id + '/' + (st.rec.tab || 'overview') : '');
+  return '#' + (st.tier === 'bws' ? 'nhc' : st.tier) + (who ? '/' + who : '') + (st.page && st.page !== 'dashboard' || st.rec ? '/' + st.page : '') + (st.rec ? '/' + st.rec.id + '/' + (st.rec.tab || 'overview') : '');
 }
 try { _bfAddr = bfAddrParse(location.hash); } catch (e) {}
 var _bfStore = null;
